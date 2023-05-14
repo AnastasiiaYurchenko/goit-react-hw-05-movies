@@ -1,7 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import * as API from '../API';
+import { Link } from 'react-router-dom';
+
+export const ERROR_MSG = 'Something went wrong, please try again';
 
 const Home = () => {
-  return <div>Home</div>;
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function getTrendingMovies() {
+      try {
+        // setLoading(true);
+        // setError(null);
+        const trendingMovies = await API.getTrendingMovies();
+        console.log(trendingMovies.results);
+
+        setMovies(trendingMovies.results);
+        // console.log(movies);
+      } catch (error) {
+        setError(ERROR_MSG);
+      } finally {
+        setLoading(false);
+      }
+    }
+    getTrendingMovies();
+  }, []);
+
+  return (
+    <ul>
+      {movies &&
+        movies.map(movie => {
+          return (
+            <li key={movie.id}>
+              <Link key={movie.id} to={`movies/${movie.id}`}>
+                {movie.title || movie.name}
+              </Link>
+            </li>
+          );
+        })}
+    </ul>
+  );
 };
 
 export default Home;
