@@ -6,6 +6,7 @@ export const ERROR_MSG = 'Something went wrong, please try again';
 
 const MovieDetails = () => {
   const [movieDetails, setmovieDetails] = useState([]);
+  const [movieGenres, setMovieGenres] = useState([]);
 
   // const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -23,6 +24,7 @@ const MovieDetails = () => {
         console.log(movieDetails.genres);
 
         setmovieDetails(movieDetails);
+        setMovieGenres(movieDetails.genres);
         // console.log(movies);
       } catch (error) {
         setError(ERROR_MSG);
@@ -34,24 +36,30 @@ const MovieDetails = () => {
     getMovieDetails();
   }, []);
 
+  // const genresArr = movieDetails.genres;
+  // console.log(genresArr);
+
   return (
     <div>
-      <h2>Additional information for {movieId}</h2>
-      <img src={movieDetails.poster_path} alt={movieDetails.title}></img>
-      <p>
+      <h2>
+        Additional information for movie{' '}
+        {movieDetails.title || movieDetails.name}
+      </h2>
+      <img
+        src={`https://image.tmdb.org/t/p/w300${movieDetails.poster_path}`}
+        alt={movieDetails.title}
+      ></img>
+      <h2>
         {movieDetails.title || movieDetails.name} ({movieDetails.release_date})
-      </p>
-      <p>User Score: {movieDetails.vote_average}%</p>
+      </h2>
+      <p>User Score: {Math.round(movieDetails.vote_average * 10)}%</p>
       <h3>Overview</h3>
       <p>{movieDetails.overview}</p>
       <h3>Genres</h3>
       <p>
-        {'movieDetails.genres'}
-
-        {/* {movieDetails.genres} */}
-        {/* {movieDetails.genres.map(genre => {
-          return <span key={genre.id}>{genre.name}</span>;
-        })} */}
+        {movieGenres.map(genre => (
+          <span key={genre.id}> {genre.name}</span>
+        ))}
       </p>
       <ul>
         <li>
