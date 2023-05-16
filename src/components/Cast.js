@@ -29,18 +29,27 @@ const Cast = () => {
       // }
     }
     getMovieCredits();
-  }, []);
+  }, [movieId]);
 
   return (
     <div>
-      Cast
+      {error && <h1>{error} </h1>}
       {movieCast.map(cast => {
         return (
           <li key={cast.cast_id}>
-            <img
-              src={`https://image.tmdb.org/t/p/w200${cast.profile_path}`}
-              alt={cast.name}
-            ></img>
+            {cast.profile_path ? (
+              <img
+                src={`https://image.tmdb.org/t/p/w200${cast.profile_path}`}
+                alt={cast.name}
+              ></img>
+            ) : (
+              <img
+                src={`https://via.placeholder.com/200x300?text=No+Image`}
+                alt={cast.name}
+                width="200px"
+              ></img>
+            )}
+
             <p> {cast.name}</p>
             <p>Character: {cast.character}</p>
           </li>

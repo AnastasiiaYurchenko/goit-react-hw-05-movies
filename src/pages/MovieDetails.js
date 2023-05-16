@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { Link, Outlet, useParams } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
 import * as API from '../API';
+import { Loader } from 'components/Loader';
 
 export const ERROR_MSG = 'Something went wrong, please try again';
 
 const MovieDetails = () => {
+  const location = useLocation();
+  console.log(location);
+  const backLinkLocationRef = useRef(location.state?.from ?? '/');
   const [movieDetails, setmovieDetails] = useState([]);
   const [movieGenres, setMovieGenres] = useState([]);
 
-  // const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const { movieId } = useParams();
@@ -17,39 +21,43 @@ const MovieDetails = () => {
   useEffect(() => {
     async function getMovieDetails() {
       try {
-        // setLoading(true);
-        // setError(null);
+        setLoading(true);
+        setError(null);
         const movieDetails = await API.getMovieDetails(movieId);
         console.log(movieDetails);
-        console.log(movieDetails.genres);
 
         setmovieDetails(movieDetails);
         setMovieGenres(movieDetails.genres);
-        // console.log(movies);
       } catch (error) {
         setError(ERROR_MSG);
+      } finally {
+        setLoading(false);
       }
-      // finally {
-      //   setLoading(false);
-      // }
     }
     getMovieDetails();
-  }, []);
-
-  // const genresArr = movieDetails.genres;
-  // console.log(genresArr);
+  }, [movieId]);
 
   return (
     <div>
-      <Link to="/">Go back</Link>
+      <Link to={backLinkLocationRef.current}>Go back</Link>
       <h2>
-        Additional information for movie{' '}
+        Additional information for movie
         {movieDetails.title || movieDetails.name}
       </h2>
-      <img
-        src={`https://image.tmdb.org/t/p/w300${movieDetails.poster_path}`}
-        alt={movieDetails.title}
-      ></img>
+      {error && <h1>{error} </h1>}
+      {loading && <Loader />}
+      {movieDetails.poster_path ? (
+        <img
+          src={`https://image.tmdb.org/t/p/w300${movieDetails.poster_path}`}
+          alt={movieDetails.title}
+        ></img>
+      ) : (
+        <img
+          src={`https://via.placeholder.com/300x400?text=No+Image`}
+          alt={movieDetails.title}
+        ></img>
+      )}
+
       <h2>
         {movieDetails.title || movieDetails.name} ({movieDetails.release_date})
       </h2>

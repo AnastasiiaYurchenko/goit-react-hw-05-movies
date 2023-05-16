@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import * as API from '../API';
 import { Link } from 'react-router-dom';
+import { Loader } from 'components/Loader';
 
 export const ERROR_MSG = 'Something went wrong, please try again';
 
@@ -12,8 +13,8 @@ const Home = () => {
   useEffect(() => {
     async function getTrendingMovies() {
       try {
-        // setLoading(true);
-        // setError(null);
+        setLoading(true);
+        setError(null);
         const trendingMovies = await API.getTrendingMovies();
         console.log(trendingMovies.results);
 
@@ -30,6 +31,8 @@ const Home = () => {
 
   return (
     <ul>
+      {error && <h1>{error} </h1>}
+      {loading && <Loader />}
       {movies &&
         movies.map(movie => {
           return (

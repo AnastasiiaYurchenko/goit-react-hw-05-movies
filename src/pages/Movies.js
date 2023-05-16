@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import * as API from '../API';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 
 export const ERROR_MSG = 'Something went wrong, please try again';
 
@@ -10,19 +10,20 @@ const Movies = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [error, setError] = useState(null);
 
-  const searchQuery = searchParams.get('query');
+  const query = searchParams.get('query');
+  console.log(query);
+  const location = useLocation();
 
   useEffect(() => {
-    if (searchQuery === '') return;
+    if (query === '' || query === null) return;
 
     async function SearchMovies() {
       try {
         // setLoading(true);
         // setError(null);
-        const searchedMovies = await API.SearchMovies(searchQuery);
-        console.log(searchedMovies);
+        const searchedMovies = await API.SearchMovies(query);
 
-        setSearchedMovies(searchedMovies);
+        setSearchedMovies(searchedMovies.results);
       } catch (error) {
         setError(ERROR_MSG);
       }
@@ -31,13 +32,13 @@ const Movies = () => {
       // }
     }
     SearchMovies();
-  }, [searchQuery]);
+  }, [query]);
 
   const handleSubmit = e => {
     e.preventDefault();
     const form = e.currentTarget;
     console.log(form);
-    setSearchParams({ searchQuery: form.elements.searchQuery.value });
+    setSearchParams({ query: form.elements.query.value });
     form.reset();
   };
 
@@ -47,18 +48,31 @@ const Movies = () => {
     if (searchQueryValue === '') {
       return setSearchParams({});
     }
-    setSearchParams({ searchQuery: searchQueryValue });
+    setSearchParams({ query: searchQueryValue });
   };
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="searchQuery"
-          onChange={updateQuerySrting}
-        ></input>
+        <input type="text" name="query" onChange={updateQuerySrting}></input>
         <button type="submit">Search</button>
       </form>
+      {error && <h1>{error} </h1>}
+      <ul>
+        {searchedMovies &&
+          searchedMovies.map(movie => {
+            return (
+              <li key={movie.id}>
+                <Link
+                  key={movie.id}
+                  to={`${movie.id}`}
+                  state={{ from: location }}
+                >
+                  {movie.title || movie.name}
+                </Link>
+              </li>
+            );
+          })}
+      </ul>
     </div>
   );
 };
