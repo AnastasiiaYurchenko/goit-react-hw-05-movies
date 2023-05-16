@@ -41,6 +41,7 @@ const MovieDetails = () => {
 
   return (
     <div>
+      <Link to="/">Go back</Link>
       <h2>
         Additional information for movie{' '}
         {movieDetails.title || movieDetails.name}

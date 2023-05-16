@@ -60,3 +60,13 @@ export const getMovieReviews = async movieId => {
   }
   return response.data;
 };
+
+export const SearchMovies = async searchQuery => {
+  const response = await axios.get(
+    `https://api.themoviedb.org/3/search/movie?query=${searchQuery}&api_key=${KEY}&language=en-US&page=1&include_adult=false`
+  );
+  if (response.status === 404) {
+    throw new Error('Something went wrong, please try again', response.status);
+  }
+  return response.data;
+};
