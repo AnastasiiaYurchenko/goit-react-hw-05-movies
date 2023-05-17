@@ -31,7 +31,7 @@ const Reviews = () => {
   }, [movieId]);
 
   return (
-    <div>
+    <ul>
       {error && <h1>{error} </h1>}
       {loading && <Loader />}
       {reviews.length > 0 ? (
@@ -46,7 +46,7 @@ const Reviews = () => {
       ) : (
         <p>There is no reviews</p>
       )}
-    </div>
+    </ul>
   );
 };
 

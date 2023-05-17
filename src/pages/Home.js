@@ -16,10 +16,8 @@ const Home = () => {
         setLoading(true);
         setError(null);
         const trendingMovies = await API.getTrendingMovies();
-        console.log(trendingMovies.results);
 
         setMovies(trendingMovies.results);
-        // console.log(movies);
       } catch (error) {
         setError(ERROR_MSG);
       } finally {
